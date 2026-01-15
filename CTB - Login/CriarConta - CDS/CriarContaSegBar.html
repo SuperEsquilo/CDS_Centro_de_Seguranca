@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Criar conta — GeoSegBar</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #060709;
+      --card: #0f1720;
+      --panel: rgba(255, 255, 255, 0.03);
+      --accent: #00b8ea;
+      --accent-2: #006fbe;
+      --muted: rgba(255, 255, 255, 0.78);
+      --glass: rgba(255, 255, 255, 0.04);
+      --success: #22c55e;
+      --danger: #ff4b4b;
+      --radius: 12px;
+      --ui-transition: 180ms;
+      --btn-scale-hover: 1.025;
+      --btn-scale-active: 0.985;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      font-family: Inter, Poppins, system-ui;
+      background: linear-gradient(180deg, #021017 0%, #06131a 100%);
+      color: var(--muted);
+    }
+
+    .container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 980px;
+      border-radius: 16px;
+      padding: 28px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.03));
+      border: 1px solid var(--glass);
+      box-shadow: 0 14px 50px rgba(2, 6, 23, 0.6);
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 22px;
+      align-items: start;
+      overflow: hidden;
+      /* evita conteúdo estourar */
+    }
+
+    /* left panel — hero + explanation */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding-right: 6px;
+      min-width: 0;
+    }
+
+    .logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #04202b;
+      font-size: 22px;
+      box-shadow: 0 10px 28px rgba(0, 105, 170, 0.14)
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 20px;
+      color: #fff
+    }
+
+    .hero p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.78);
+      line-height: 1.45
+    }
+
+    /* right panel — form */
+    .form-wrap {
+      background: rgba(255, 255, 255, 0.02);
+      padding: 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      max-height: calc(100vh - 120px);
+      overflow: auto;
+      /* rolagem interna se necessário sem quebrar layout */
+      -webkit-overflow-scrolling: touch;
+      min-width: 0;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 160px;
+      /* evita colapsar demais */
+    }
+
+    label {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.75);
+      font-weight: 600
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+      height: 44px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(0, 0, 0, 0.02));
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: box-shadow var(--ui-transition) ease, transform .08s ease, border-color var(--ui-transition) ease;
+      width: 100%;
+      min-width: 0;
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.36)
+    }
+
+    input:focus,
+    select:focus {
+      box-shadow: 0 8px 30px rgba(0, 120, 200, 0.08);
+      transform: translateY(-1px);
+      border-color: var(--accent-2)
+    }
+
+    .tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .tags-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .tag {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.03);
+      font-size: 13px;
+      color: var(--muted);
+      border: 1px solid rgba(255, 255, 255, 0.02);
+      cursor: pointer;
+      white-space: nowrap;
+      flex: 0 0 auto;
+      transition: transform var(--ui-transition) ease, box-shadow var(--ui-transition) ease, background var(--ui-transition) ease;
+    }
+
+    .tag.active {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #04202b;
+      border: none;
+      box-shadow: 0 8px 22px rgba(0, 120, 200, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .file-input {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .avatar-preview {
+      width: 64px;
+      height: 64px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.02);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.45);
+      font-weight: 700;
+      overflow: hidden;
+      flex: 0 0 64px;
+    }
+
+    .avatar-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .password-meter {
+      height: 8px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      overflow: hidden
+    }
+
+    .password-meter>i {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #ef4444, #f97316, #10b981);
+      transition: width .22s ease
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: 0;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform var(--ui-transition) ease, box-shadow var(--ui-transition) ease, opacity var(--ui-transition) ease;
+      will-change: transform, box-shadow;
+      min-width: 120px;
+    }
+
+    .btn.primary {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #04202b;
+      box-shadow: 0 12px 36px rgba(2, 132, 199, 0.12);
+    }
+
+    .btn.ghost {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--muted)
+    }
+
+    /* button interactive animations */
+    .btn:hover {
+      transform: scale(var(--btn-scale-hover));
+      box-shadow: 0 18px 48px rgba(2, 132, 199, 0.14);
+      opacity: 0.98;
+    }
+
+    .btn:active {
+      transform: scale(var(--btn-scale-active));
+      box-shadow: 0 8px 22px rgba(2, 132, 199, 0.08);
+    }
+
+    .btn:focus {
+      outline: none;
+      box-shadow: 0 6px 30px rgba(2, 132, 199, 0.16);
+    }
+
+    .help {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.45);
+      margin-top: 6px
+    }
+
+    .foot-note {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.45);
+      text-align: center;
+      margin-top: 12px
+    }
+
+    /* small screens adjustments */
+    @media (max-width: 980px) {
+      .card {
+        grid-template-columns: 1fr;
+        padding: 20px;
+      }
+
+      .form-wrap {
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .row {
+        gap: 8px;
+      }
+
+      .col {
+        min-width: 140px;
+      }
+
+      .logo {
+        width: 56px;
+        height: 56px;
+        font-size: 18px;
+      }
+
+      .avatar-preview {
+        width: 56px;
+        height: 56px;
+        flex: 0 0 56px;
+      }
+
+      .btn {
+        padding: 10px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="card" role="region" aria-labelledby="create-account-title">
+      <div class="hero" aria-hidden="false">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="logo">GSB</div>
+          <div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.6);font-weight:700">GeoSegBar</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.42)">Análise e monitoramento de barragens</div>
+          </div>
+        </div>
+
+        <h1 id="create-account-title">Criar conta profissional</h1>
+        <p>Preencha os dados a seguir para criar acesso ao sistema. Campos marcados com * são obrigatórios. As permissões e tags definem cargos de autoridade e notificações automatizadas.</p>
+
+        <div class="help">Privacidade: dados ficam no dispositivo enquanto backend não estiver configurado.</div>
+      </div>
+
+      <div class="form-wrap" aria-labelledby="form-title">
+        <form id="createAccountForm" autocomplete="on" novalidate>
+          <div class="row">
+            <div class="col">
+              <label for="fullName">Nome completo *</label>
+              <input id="fullName" name="fullName" type="text" placeholder="Ex: João da Silva" required />
+            </div>
+            <div class="col">
+              <label for="role">Cargo / Função</label>
+              <select id="role" name="role" aria-label="Cargo">
+                <option>Operador</option>
+                <option>Engenheiro</option>
+                <option>Supervisor</option>
+                <option>Gestor</option>
+                <option>Outro</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <label for="email">Email profissional *</label>
+              <input id="email" name="email" type="email" placeholder="usuario@empresa.com" required />
+            </div>
+            <div class="col">
+              <label for="phone">Telefone</label>
+              <input id="phone" name="phone" type="text" placeholder="+55 (__) _____-____" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <label for="password">Senha *</label>
+              <input id="password" name="password" type="password" placeholder="Crie uma senha segura" required aria-describedby="pwdHelp" />
+            </div>
+            <div class="col">
+              <label for="confirmPassword">Confirmar senha *</label>
+              <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Repetir senha" required />
+            </div>
+          </div>
+
+          <div>
+            <div class="password-meter" aria-hidden="true"><i id="pwdBar" style="width:6%"></i></div>
+            <div id="pwdHelp" class="help">Use mínimo 8 caracteres, inclua letras maiúsculas, números e símbolos.</div>
+          </div>
+
+          <div>
+            <label>Tags de autoridade</label>
+            <div class="tags-scroll" id="tagsScroll">
+              <div class="tags" id="tagsContainer" role="listbox" aria-multiselectable="true">
+                <div class="tag" data-val="Defesa Civil" role="option">Defesa Civil</div>
+                <div class="tag" data-val="Autoridade Ambiental" role="option">Autoridade Ambiental</div>
+                <div class="tag" data-val="Prefeitura" role="option">Prefeitura</div>
+                <div class="tag" data-val="Proteção" role="option">Proteção</div>
+                <div class="tag" data-val="Segurança" role="option">Segurança</div>
+                <div class="tag" data-val="Fiscalização" role="option">Fiscalização</div>
+              </div>
+            </div>
+            <div class="help">Selecione todas as tags aplicáveis — serão usadas para roteamento de alertas.</div>
+          </div>
+
+          <div class="row" style="align-items:center">
+            <div class="col" style="max-width:260px">
+              <label>Foto (opcional)</label>
+              <div class="file-input">
+                <div class="avatar-preview" id="avatarPreview">PNG</div>
+                <input id="avatarFile" type="file" accept="image/*" aria-label="Foto de perfil" />
+              </div>
+            </div>
+
+            <div class="col">
+              <label for="organization">Empresa / Órgão</label>
+              <input id="organization" name="organization" type="text" placeholder="Ex: Usina Hidrelétrica X" />
+            </div>
+          </div>
+
+          <div>
+            <label for="municipality">Município / Localidade</label>
+            <input id="municipality" name="municipality" type="text" placeholder="Ex: São Paulo - SP" />
+          </div>
+
+          <div style="display:flex;align-items:center;gap:10px">
+            <input id="terms" type="checkbox" style="width:16px;height:16px" aria-required="true" />
+            <label for="terms" style="margin:0">Aceito os <a href="TermosSegBar.html" onclick="event.preventDefault();alert('Mostrar termos')" style="color:var(--accent)">Termos de uso</a> e a <a href="#" onclick="event.preventDefault();alert('Mostrar política')" style="color:var(--accent)">Política de Privacidade</a> *</label>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn ghost" onclick="location.href='SegBar.html'">Cancelar</button>
+            <button type="submit" class="btn primary">Criar conta</button>
+          </div>
+
+          <div class="foot-note">Já tem conta? <a href="SegBar.html" style="color:var(--accent)">Entrar</a></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // local storage simple mock registration (client-only) - unchanged logic
+    const form = document.getElementById('createAccountForm');
+    const pwd = document.getElementById('password');
+    const pwdBar = document.getElementById('pwdBar');
+    const avatarFile = document.getElementById('avatarFile');
+    const avatarPreview = document.getElementById('avatarPreview');
+    const tagsContainer = document.getElementById('tagsContainer');
+
+    // tags toggle (delegated)
+    tagsContainer.addEventListener('click', (e) => {
+      const t = e.target.closest('.tag');
+      if (!t) return;
+      t.classList.toggle('active');
+      t.setAttribute('aria-selected', t.classList.contains('active'));
+    });
+
+    // avatar preview
+    avatarFile.addEventListener('change', e => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) {
+        avatarPreview.textContent = 'PNG';
+        avatarPreview.style.backgroundImage = '';
+        avatarPreview.innerHTML = 'PNG';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        avatarPreview.innerHTML = ''; // clear text
+        const img = document.createElement('img');
+        img.src = reader.result;
+        avatarPreview.appendChild(img);
+      };
+      reader.readAsDataURL(f);
+    });
+
+    // password strength (simple)
+    function strengthScore(s) {
+      let score = 0;
+      if (!s) return 0;
+      if (s.length >= 8) score += 1;
+      if (/[A-Z]/.test(s)) score += 1;
+      if (/[0-9]/.test(s)) score += 1;
+      if (/[^A-Za-z0-9]/.test(s)) score += 1;
+      if (s.length >= 12) score += 1;
+      return score;
+    }
+    pwd.addEventListener('input', () => {
+      const sc = strengthScore(pwd.value);
+      const pct = Math.min(100, sc * 20);
+      pwdBar.style.width = pct + '%';
+      if (pct <= 40) pwdBar.style.background = 'linear-gradient(90deg,#ef4444,#f97316)';
+      else if (pct <= 80) pwdBar.style.background = 'linear-gradient(90deg,#f97316,#fbbf24)';
+      else pwdBar.style.background = 'linear-gradient(90deg,#10b981,#60a5fa)';
+    });
+
+    // form submit
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const fullName = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const terms = document.getElementById('terms').checked;
+
+      if (!fullName || !email || !password || !confirmPassword) {
+        alert('Preencha os campos obrigatórios.');
+        return;
+      }
+      if (password !== confirmPassword) {
+        alert('As senhas não coincidem.');
+        return;
+      }
+      if (password.length < 8) {
+        alert('Senha muito curta. Utilize ao menos 8 caracteres.');
+        return;
+      }
+      if (!terms) {
+        alert('Você deve aceitar os termos.');
+        return;
+      }
+
+      // collect tags
+      const tags = Array.from(tagsContainer.querySelectorAll('.tag.active')).map(t => t.dataset.val);
+
+      // avatar data (base64) — optional
+      const avatarImg = avatarPreview.querySelector('img');
+      const avatar = avatarImg ? avatarImg.src : null;
+
+      // store locally (demo)
+      const users = JSON.parse(localStorage.getItem('gsb_users') || '[]');
+      users.push({
+        id: 'u' + Date.now(),
+        fullName,
+        email,
+        role: document.getElementById('role').value,
+        phone: document.getElementById('phone').value,
+        organization: document.getElementById('organization').value,
+        municipality: document.getElementById('municipality').value,
+        tags,
+        avatar
+      });
+      localStorage.setItem('gsb_users', JSON.stringify(users));
+
+      // success feedback and redirect
+      const submitBtn = form.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Criando...';
+      setTimeout(() => {
+        alert('Conta criada com sucesso. Você será redirecionado para a tela de login.');
+        location.href = 'SegBar.html';
+      }, 850);
+    });
+  </script>
+</body>
+
+</html>
