@@ -1,2 +1,10 @@
 # CDS_Centro_de_Seguranca
-Exemplo simples de um sistema com tela de login, validação em JavaScript e com um CSS de nível profissional. 
+O CDS – Centro de Segurança é um sistema web desenvolvido com o objetivo de oferecer uma plataforma segura, intuitiva e eficiente para o gerenciamento de usuários e clientes. Desde o primeiro contato, o sistema proporciona uma experiência clara e organizada, iniciando por uma tela de login funcional, que garante o acesso apenas a usuários autenticados, reforçando os princípios de controle e segurança da informação.
+
+O sistema conta com uma funcionalidade de recuperação de senhas, permitindo que usuários possam redefinir suas credenciais de forma prática e segura. Esse recurso foi projetado para reduzir falhas de acesso e melhorar a autonomia do usuário, seguindo boas práticas de usabilidade e fluxo de autenticação, essenciais em aplicações que lidam com dados sensíveis.
+
+Para novos usuários, o CDS oferece um formulário simples e objetivo de criação de conta, facilitando o cadastro de novos clientes sem comprometer a segurança. Os campos são validados para garantir a integridade das informações fornecidas, proporcionando um processo de registro eficiente e livre de inconsistências, além de preparar a estrutura do sistema para possíveis integrações futuras com banco de dados ou serviços externos.
+
+Após a autenticação, o usuário é direcionado a um dashboard totalmente funcional, que centraliza informações relevantes e permite uma navegação fluida entre as funcionalidades do sistema. O dashboard foi desenvolvido com foco em organização visual e clareza, oferecendo uma visão geral do sistema e facilitando o acesso às principais áreas, o que contribui para uma experiência mais produtiva e profissional.
+
+No conjunto, o CDS – Centro de Segurança demonstra a aplicação prática de conceitos fundamentais de desenvolvimento web, como autenticação de usuários, controle de sessões, validação de dados, organização de interfaces e experiência do usuário. O projeto foi construído seguindo boas práticas de desenvolvimento e estruturação de código, resultando em um sistema estável, escalável e pronto para servir como base para soluções corporativas mais robustas ou para apresentação em um portfólio profissional.
