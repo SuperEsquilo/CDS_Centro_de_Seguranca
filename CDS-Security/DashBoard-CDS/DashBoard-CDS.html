@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GeoSegBar — Dashboard</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Chart.js e Leaflet -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="DashBoard-CDS.css">
+</head>
+
+<body>
+    <div class="layout">
+        <aside class="sidebar" role="navigation" aria-label="Principal">
+            <div class="brand">
+                <div class="logo">GSB</div>
+                <div>
+                    <div class="info">GeoSegBar</div>
+                    <div class="small">Segurança de Barragens</div>
+                </div>
+            </div>
+
+            <nav class="nav" aria-label="Navegação">
+                <button id="nav_overview" class="active" onclick="showSection('overview')">Visão Geral</button>
+                <button id="nav_monitor" onclick="showSection('monitor')">Monitoramento</button>
+                <button id="nav_analytics" onclick="showSection('analytics')">Análises</button>
+                <button id="nav_reports" onclick="showSection('reports')">Relatórios</button>
+                <button id="nav_settings" onclick="showSection('settings')">Configurações</button>
+            </nav>
+
+            <div class="user">
+                <div class="avatar" id="avatar">G</div>
+                <div>
+                    <div id="user_email" style="font-weight:700;color:var(--white)">Usuário</div>
+                    <div class="small" id="user_role">Operador</div>
+                </div>
+                <button class="logout" onclick="logout()">Sair</button>
+            </div>
+        </aside>
+
+        <main class="main" role="main">
+            <div class="topbar">
+                <div>
+                    <h1 style="margin:0;color:var(--white)">Painel de Controle - Central de Segurança</h1>
+                    <div class="small">Monitoramento em tempo real, alertas e relatórios</div>
+                </div>
+                <div class="small">Última atualização: <span id="last_update">—</span></div>
+            </div>
+
+            <!-- Overview -->
+            <section id="overview_section">
+                <div class="kpis">
+                    <div class="kpi card">
+                        <h3>Estado geral</h3>
+                        <div class="value" id="kpi_status">Estável</div>
+                        <div class="small">Barragens com risco alto: <strong id="kpi_high">2</strong></div>
+                    </div>
+                    <div class="kpi card">
+                        <h3>Incidentes (30d)</h3>
+                        <div class="value" id="kpi_incidents">4</div>
+                        <div class="small">Alertas novos: <strong id="kpi_alerts">1</strong></div>
+                    </div>
+                    <div class="kpi card">
+                        <h3>Vazão atual</h3>
+                        <div class="value" id="kpi_flow">1,240 m³/s</div>
+                        <div class="small">Nível médio: <strong id="kpi_level">78%</strong></div>
+                    </div>
+                </div>
+
+                <div class="grid">
+                    <div class="card">
+                        <h3 style="color:var(--white)">Mapa e monitoramento</h3>
+                        <div id="map"></div>
+                        <div style="display:flex;gap:8px;margin-top:10px">
+                            <select id="select_site" onchange="focusSite(this.value)">
+                                <option value="all">Todos os pontos</option>
+                                <option value="site1">Barragem A</option>
+                                <option value="site2">Barragem B</option>
+                                <option value="site3">Barragem C</option>
+                            </select>
+                            <button onclick="simulateAlert()"
+                                style="margin-left:auto;padding:8px 12px;border-radius:8px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#04202b;cursor:pointer">Simular
+                                Alerta</button>
+                        </div>
+
+                        <!-- Gerenciamento rápido: adicionar ponto e leituras -->
+                        <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap">
+                            <!-- add site card -->
+                            <div style="flex:1;min-width:260px" class="card">
+                                <h4 style="margin:6px 0;color:var(--white)">Adicionar novo ponto</h4>
+                                <div style="display:flex;flex-direction:column;gap:8px">
+                                    <div class="form-field">
+                                        <label class="form-label">Nome</label>
+                                        <input id="new_name" class="form-input"
+                                            placeholder="Barragem D — exemplo: Usina Azul" />
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-field">
+                                            <label class="form-label">Latitude</label>
+                                            <input id="new_lat" class="form-input" placeholder="-23.5000" />
+                                        </div>
+                                        <div class="form-field">
+                                            <label class="form-label">Longitude</label>
+                                            <input id="new_lng" class="form-input" placeholder="-46.6000" />
+                                        </div>
+                                    </div>
+                                    <div class="form-field">
+                                        <label class="form-label">Nível inicial (%)</label>
+                                        <input id="new_level" class="form-input" placeholder="Ex: 78" />
+                                        <div class="help">Informe o nível atual do reservatório em porcentagem.</div>
+                                    </div>
+                                    <div style="display:flex;gap:8px">
+                                        <button onclick="addSiteFromForm()" class="btn-primary" style="flex:1">Adicionar
+                                            ponto</button>
+                                        <button onclick="clearSiteForm()" class="btn-ghost"
+                                            style="flex:1">Limpar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="width:320px" class="card">
+                                <h4 style="margin:6px 0;color:var(--white)">Adicionar leitura</h4>
+                                <div style="display:flex;flex-direction:column;gap:8px">
+                                    <div class="form-field">
+                                        <label class="form-label">Ponto</label>
+                                        <select id="read_site" class="form-select">
+                                            <option value="">Escolha um ponto</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-field">
+                                        <label class="form-label">Nível (%)</label>
+                                        <input id="read_level" class="form-input" placeholder="Ex: 84" />
+                                    </div>
+                                    <div class="form-field">
+                                        <label class="form-label">Timestamp (opcional)</label>
+                                        <input id="read_time" class="form-input"
+                                            placeholder="yyyy-mm-dd hh:mm — se vazio usará agora" />
+                                    </div>
+                                    <div style="display:flex;gap:8px">
+                                        <button onclick="addReadingFromForm()" class="btn-primary"
+                                            style="flex:1">Adicionar leitura</button>
+                                        <button onclick="clearReadingForm()" class="btn-ghost"
+                                            style="flex:1">Limpar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /Gerenciamento rápido -->
+                        </div>
+
+                        <div class="card">
+                            <h3 style="color:var(--white)">Níveis e medidores</h3>
+                            <canvas id="chartLevels" style="width:100%;height:260px"></canvas>
+                            <div style="margin-top:8px" class="small">Últimas leituras de sensores</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;gap:18px;margin-top:18px;flex-wrap:wrap">
+                        <div class="card" style="flex:1;min-width:320px">
+                            <h3 style="color:var(--white)">Tendência de alertas</h3>
+                            <canvas id="chartAlerts" style="width:100%;height:160px"></canvas>
+                        </div>
+
+                        <div class="card" style="width:420px">
+                            <h3 style="color:var(--white)">Últimos eventos</h3>
+                            <table class="table" aria-live="polite">
+                                <thead>
+                                    <tr>
+                                        <th>Horário</th>
+                                        <th>Local</th>
+                                        <th>Tipo</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="events_table">
+                                    <!-- preenchido por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+            </section>
+
+            <!-- Placeholder sections -->
+            <section id="monitor_section" style="display:none">
+                <div class="card">
+                    <h3 style="color:var(--white)">Monitoramento Detalhado</h3>
+                    <p class="small">Painel com sensores, séries temporais e logs.</p>
+                </div>
+            </section>
+
+            <section id="analytics_section" style="display:none">
+                <div class="card">
+                    <h3 style="color:var(--white)">Análises e Modelos</h3>
+                    <p class="small">Análises preditivas e simulações hidrodinâmicas.</p>
+                </div>
+            </section>
+
+            <section id="reports_section" style="display:none">
+                <div class="card">
+                    <h3 style="color:var(--white)">Relatórios</h3>
+                    <p class="small">Gerar PDF, exportar dados e histórico.</p>
+                </div>
+            </section>
+
+            <section id="settings_section" style="display:none">
+                <div class="card">
+                    <h3 style="color:var(--white)">Configurações</h3>
+                    <p class="small">Preferências do sistema, usuários e integrações.</p>
+                </div>
+
+                <!-- Gestão de funcionários -->
+                <div class="card" style="margin-top:12px">
+                    <h3 style="color:var(--white);margin-bottom:8px">Gestão de funcionários</h3>
+
+                    <!-- Formulário de adição -->
+                    <div style="display:flex;gap:12px;flex-wrap:wrap">
+                        <div style="flex:1;min-width:320px">
+                            <div class="form-field">
+                                <label class="form-label">Nome</label>
+                                <input id="emp_name" class="form-input" placeholder="Nome completo" />
+                            </div>
+                            <div class="form-row" style="margin-top:6px">
+                                <div class="form-field" style="flex:1">
+                                    <label class="form-label">Email</label>
+                                    <input id="emp_email" class="form-input" placeholder="usuario@empresa.com" />
+                                </div>
+                                <div class="form-field" style="width:160px">
+                                    <label class="form-label">Cargo</label>
+                                    <select id="emp_role" class="form-select">
+                                        <option value="Operador">Operador</option>
+                                        <option value="Engenheiro">Engenheiro</option>
+                                        <option value="Supervisor">Supervisor</option>
+                                        <option value="Gestor">Gestor</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-field" style="margin-top:8px">
+                                <label class="form-label">Tags de autoridade</label>
+                                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                                    <label style="display:inline-flex;align-items:center;gap:8px">
+                                        <input type="checkbox" class="emp-tag" value="Defesa Civil" /> Defesa Civil
+                                    </label>
+                                    <label style="display:inline-flex;align-items:center;gap:8px">
+                                        <input type="checkbox" class="emp-tag" value="Autoridade Ambiental" />
+                                        Autoridade Ambiental
+                                    </label>
+                                    <label style="display:inline-flex;align-items:center;gap:8px">
+                                        <input type="checkbox" class="emp-tag" value="Prefeitura" /> Prefeitura
+                                    </label>
+                                    <label style="display:inline-flex;align-items:center;gap:8px">
+                                        <input type="checkbox" class="emp-tag" value="Proteção" /> Proteção
+                                    </label>
+                                </div>
+                                <div class="help">Marque as tags que esse funcionário possui.</div>
+                            </div>
+
+                            <div style="display:flex;gap:8px;margin-top:8px">
+                                <button onclick="addEmployeeFromForm()" class="btn-primary" style="flex:1">Adicionar
+                                    funcionário</button>
+                                <button onclick="clearEmployeeForm()" class="btn-ghost" style="flex:1">Limpar</button>
+                            </div>
+                        </div>
+
+                        <!-- Tabela de funcionários -->
+                        <div style="flex:1;min-width:420px">
+                            <h4 style="margin:6px 0;color:var(--white)">Funcionários</h4>
+                            <table class="table" id="employees_table">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Email</th>
+                                        <th>Cargo</th>
+                                        <th>Tags</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <div class="help" style="margin-top:8px">As alterações ficam salvas localmente
+                                (localStorage).</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer><small>©CDS — Painel de Monitoramento</small></footer>
+        </main>
+    </div>
+    <script src="DashBoard-CDS.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Criar conta — GeoSegBar</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@400;600&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="CriarConta-CDS.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="card" role="region" aria-labelledby="create-account-title">
+      <div class="hero" aria-hidden="false">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="logo">CDS</div>
+          <div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.6);font-weight:700">CDS - Centro de Segurança</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.42)">Análise e monitoramento de empresas</div>
+          </div>
+        </div>
+
+        <h1 id="create-account-title">Criar conta profissional</h1>
+        <p>Preencha os dados a seguir para criar acesso ao sistema. Campos marcados com * são obrigatórios. As
+          permissões e tags definem cargos de autoridade e notificações automatizadas.</p>
+
+        <div class="help">Privacidade: dados ficam no dispositivo enquanto backend não estiver configurado.</div>
+      </div>
+
+      <div class="form-wrap" aria-labelledby="form-title">
+        <form id="createAccountForm" autocomplete="on" novalidate>
+          <div class="row">
+            <div class="col">
+              <label for="fullName">Nome completo *</label>
+              <input id="fullName" name="fullName" type="text" placeholder="Ex: João da Silva" required />
+            </div>
+            <div class="col">
+              <label for="role">Cargo / Função</label>
+              <select id="role" name="role" aria-label="Cargo">
+                <option>Operador</option>
+                <option>Engenheiro</option>
+                <option>Supervisor</option>
+                <option>Gestor</option>
+                <option>Outro</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <label for="email">Email profissional *</label>
+              <input id="email" name="email" type="email" placeholder="usuario@empresa.com" required />
+            </div>
+            <div class="col">
+              <label for="phone">Telefone</label>
+              <input id="phone" name="phone" type="text" placeholder="+55 (__) _____-____" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <label for="password">Senha *</label>
+              <input id="password" name="password" type="password" placeholder="Crie uma senha segura" required
+                aria-describedby="pwdHelp" />
+            </div>
+            <div class="col">
+              <label for="confirmPassword">Confirmar senha *</label>
+              <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Repetir senha" required />
+            </div>
+          </div>
+
+          <div>
+            <div class="password-meter" aria-hidden="true"><i id="pwdBar" style="width:6%"></i></div>
+            <div id="pwdHelp" class="help">Use mínimo 8 caracteres, inclua letras maiúsculas, números e símbolos.</div>
+          </div>
+
+          <div>
+            <label>Tags de autoridade</label><br><br>
+            <div class="tags-scroll" id="tagsScroll">
+              <div class="tags" id="tagsContainer" role="listbox" aria-multiselectable="true">
+                <div class="tag" data-val="Cyber Segurança" role="option">Cyber Segurança</div>
+                <div class="tag" data-val="Antivírus Corporativo" role="option">Antivírus Corporativo </div>
+                <div class="tag" data-val="Friewall Corporativo" role="option">Friewall Corporativo</div>
+                <div class="tag" data-val="Proteção Cloud" role="option">Proteção Cloud</div>
+                <div class="tag" data-val="Treinamento de Segurança" role="option">Treinamento de Segurança</div>
+                <div class="tag" data-val="Backup Corporativo" role="option">Backup Corporativo</div>
+                <div class="tag" data-val="Servidor Corporativo" role="option">Servidor Corporativo</div>
+                <div class="tag" data-val="Gerenciamento Remoto" role="option">Gerenciamento Remoto</div>
+              </div>
+            </div>
+            <div class="help">Selecione os serviços que deseja ser realizado em sua empresa - Praso de entrega varia do tipo de serviço aplicado</div>
+          </div>
+
+          <div class="row" style="align-items:center">
+            <div class="col" style="max-width:260px">
+              <label>Logo da empresa (opcional)</label>
+              <div class="file-input">
+                <div class="avatar-preview" id="avatarPreview">LOGO</div>
+                <input id="avatarFile" type="file" accept="image/*" aria-label="Logo da empresa" />
+              </div>
+            </div>
+
+            <div class="col">
+              <label for="organization">Empresa / Órgão</label>
+              <input id="organization" name="organization" type="text" placeholder="Ex: Empresa Celulose" />
+            </div>
+          </div>
+
+          <div>
+            <label for="municipality">Município / Localidade</label>
+            <input id="municipality" name="municipality" type="text" placeholder="Ex: São Paulo - SP" />
+          </div>
+
+          <div style="display:flex;align-items:center;gap:10px">
+            <input id="terms" type="checkbox" style="width:16px;height:16px" aria-required="true" />
+            <label for="terms" style="margin:0">Aceito os <a href="TermosUso-CDS/Login.html"
+                onclick="event.preventDefault();alert('Mostrar termos')" style="color:var(--accent)">Termos de uso</a> e
+              a <a href="#" onclick="event.preventDefault();alert('Mostrar política')"
+                style="color:var(--accent)">Política de Privacidade</a> *</label>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn ghost" onclick="location.href='CTB - Login/Login.html'">Cancelar</button>
+            <button type="submit" class="btn primary">Criar conta</button>
+          </div>
+
+          <div class="foot-note">Já tem conta? <a href="CTB - login/Login.html" style="color:var(--accent)">Entrar</a></div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="CriarConta-CDS.js"></script>
+</body>
+
+</html>
